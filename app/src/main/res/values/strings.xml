@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Security-Banking-App</string>
+    <string name="caption">Trust us with your money.</string>
+    <string name="bankr">Bankr</string>
+    <string name="log_in">Log in</string>
+    <string name="or">--------------------OR--------------------</string>
+    <string name="sign_up">Sign up</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="initial_balance">Initial Balance</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
+    <string name="welcomeMessage">Hello [username].</string>
+    <string name="your_balance">Your Balance:</string>
+    <string name="balance">$[Balance]</string>
+    <string name="log_out">Log out</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="deposit">Deposit</string>
+    <string name="enter_amount">Enter Amount</string>
+</resources>
