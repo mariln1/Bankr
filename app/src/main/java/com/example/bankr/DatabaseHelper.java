@@ -88,10 +88,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public float updateUser(String username, float balance) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String statement = "UPDATE " + USERS_TABLE
-                + "SET " + COLUMN_BALANCE + " = " + balance
-                + " WHERE " + username + "'";
-        db.execSQL(statement);
+        String sql = "UPDATE "+USERS_TABLE +" SET " + COLUMN_BALANCE+ " = "+balance+" WHERE "+COLUMN_USERNAME+ " = '"+username +"'";
+        db.execSQL(sql);
         return balance;
 
     }

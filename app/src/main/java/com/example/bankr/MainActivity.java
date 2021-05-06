@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.NumberFormat;
 
@@ -18,29 +19,36 @@ public class MainActivity extends AppCompatActivity {
     Button withdraw;
     Button deposit;
     Button logout;
+    String user;
+    String current = "";
 
     TextView welcomeMessage;
     TextView balance;
+    TextView yourBalance;
 
     EditText amount;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DatabaseHelper databaseHelper = new DatabaseHelper(MainActivity.this);
+        databaseHelper = new DatabaseHelper(MainActivity.this);
 
         welcomeMessage = (TextView) findViewById(R.id.welcomeMessage);
         Intent intent = getIntent();
         String username = intent.getExtras().getString("username");
+        user = username;
         welcomeMessage.setText("Welcome " + username);
 
         balance = (TextView) findViewById(R.id.balance);
         balance.setText("$" + String.format("%.2f", databaseHelper.getBalance(username)));
 
+        yourBalance = (TextView) findViewById(R.id.strYourBalance);
+
         amount = (EditText) findViewById(R.id.etAmount);
         amount.addTextChangedListener(new TextWatcher() {
-            private String current = "";
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -79,15 +87,58 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) { withdraw(); }
         });
+
+        deposit = findViewById(R.id.btnDeposit);
+        deposit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { deposit(); }
+        });
+
+        logout = findViewById(R.id.btnLogout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { logout(); }
+        });
+
     }
 
     private void withdraw() {
         //TODO: withdrawal functionality
+        String newer = amount.getText().toString();
+        String[] amt = newer.split("\\$");
+
+        String old = String.format("%.02f", databaseHelper.getBalance(user));
+        System.out.println(old);
+
+
+        float newAmount = Float.valueOf(old) - Float.valueOf(amt[1]);
+
+        System.out.println(newAmount);
+        balance.setText("$" + newAmount);
+        databaseHelper.updateUser(user, newAmount);
+    }
+
+    private void deposit() {
+
+        String newer = amount.getText().toString();
+        String[] amt = newer.split("\\$");
+
+        String old = String.format("%.02f", databaseHelper.getBalance(user));
+        System.out.println(old);
+
+
+        float newAmount = Float.valueOf(old) + Float.valueOf(amt[1]);
+
+        System.out.println(newAmount);
+        balance.setText("$" + newAmount);
+        databaseHelper.updateUser(user, newAmount);
 
     }
 
-    // TODO: deposit functionality
+    private void logout() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
+    }
 
-    // TODO: logout functionality
 
 }
