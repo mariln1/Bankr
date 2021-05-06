@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,7 +28,17 @@ public class LoginActivity extends AppCompatActivity {
     public void connect() {
         TextView username = (TextView) findViewById(R.id.etUsername);
         TextView password = (TextView) findViewById(R.id.etPassword);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+
+
+        // TODO: neutralize inputs
+        DatabaseHelper databaseHelper = new DatabaseHelper(LoginActivity.this);
+        if (databaseHelper.checkUsernameAndPassword(username.getText().toString(), password.getText().toString())) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("username", username.getText().toString());
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(LoginActivity.this, "Username and/or Password is incorrect", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -66,7 +66,6 @@ public class SignupActivity extends AppCompatActivity {
         signup = (Button) findViewById(R.id.btnSignup);
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
-            //TODO: Check if valid
             public void onClick(View v) { connect(); }
         });
     }
@@ -77,10 +76,7 @@ public class SignupActivity extends AppCompatActivity {
         password = findViewById(R.id.etPassword);
         confirmPassword = findViewById(R.id.etConfirmPassword);
 
-
-        float balance = Float.parseFloat(amount.getText().toString().replaceAll("[^\\d.]", ""));
-
-
+        // TODO: neutralize inputs
 
         if (username.getText().toString().isEmpty() || amount.getText().toString().isEmpty() || password.getText().toString().isEmpty() || confirmPassword.getText().toString().isEmpty()) {
             Toast.makeText(SignupActivity.this, "invalid_input", Toast.LENGTH_SHORT).show();
@@ -95,6 +91,7 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(SignupActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
                 return;
             }
+            float balance = Float.parseFloat(amount.getText().toString().replaceAll("[^\\d.]", ""));
             User user = new User(username.getText().toString(), balance, password.getText().toString());
             boolean success = databaseHelper.addUser(user);
 

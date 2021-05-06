@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -59,5 +60,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else {
             return false;
         }
+    }
+
+    public boolean checkUsernameAndPassword(String username, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String queryStr = "SELECT USERNAME FROM " + USERS_TABLE + " WHERE USERNAME = '" + username + "' AND PASSWORD = '" + password + "'";
+        Cursor cursor = db.rawQuery(queryStr, null);
+        if (cursor.moveToFirst()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public float getBalance(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String queryStr = "SELECT BALANCE FROM " + USERS_TABLE + " WHERE USERNAME = '" + username + "'";
+        Cursor cursor = db.rawQuery(queryStr, null);
+        if (cursor.moveToFirst()) {
+            return cursor.getFloat(0);
+        }
+        else {
+            return -1;
+        }
+    }
+
+    public float updateUser(String username, float balance) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String statement = "UPDATE " + USERS_TABLE
+                + "SET " + COLUMN_BALANCE + " = " + balance
+                + " WHERE " + username + "'";
+        db.execSQL(statement);
+        return balance;
+
     }
 }
