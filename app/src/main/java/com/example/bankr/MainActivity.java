@@ -103,12 +103,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void withdraw() {
-        //TODO: withdrawal functionality
-        String newer = amount.getText().toString();
+        String newer = amount.getText().toString().replaceAll(",","");
+        System.out.println(newer);
         String[] amt = newer.split("\\$");
 
         String old = String.format("%.02f", databaseHelper.getBalance(user));
         System.out.println(old);
+        if(Float.valueOf(old) < Float.valueOf(amt[1])) {
+            Toast.makeText(MainActivity.this, "Overdraft, please enter less to withdraw", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
 
         float newAmount = Float.valueOf(old) - Float.valueOf(amt[1]);
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void deposit() {
 
-        String newer = amount.getText().toString();
+        String newer = amount.getText().toString().replaceAll(",","");
         String[] amt = newer.split("\\$");
 
         String old = String.format("%.02f", databaseHelper.getBalance(user));
