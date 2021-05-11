@@ -1,12 +1,14 @@
 package com.example.bankr;
 
 
+import java.math.BigDecimal;
+
 public class User {
     private String username;
-    private float balance;
+    private BigDecimal balance;
     private String password;
 
-    public User(String username, float balance, String password) {
+    public User(String username, BigDecimal balance, String password) {
         this.username = username;
         this.balance = balance;
         this.password = password;
@@ -14,7 +16,7 @@ public class User {
 
     public String getUsername() { return username; }
 
-    public float getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
@@ -22,6 +24,6 @@ public class User {
         return password;
     }
 
-    public void setBalance(float balance) { this.balance = balance; }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
 
 }

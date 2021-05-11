@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         welcomeMessage.setText("Welcome " + username);
 
         balance = (TextView) findViewById(R.id.balance);
-        balance.setText("$" + String.format("%.2f", databaseHelper.getBalance(username)));
+        balance.setText("$" + String.format("%,.2f", databaseHelper.getBalance(username)));
 
         yourBalance = (TextView) findViewById(R.id.strYourBalance);
 
@@ -103,39 +104,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void withdraw() {
-        String newer = amount.getText().toString().replaceAll(",","");
-        System.out.println(newer);
-        String[] amt = newer.split("\\$");
+        String amountToWithdrawStr = amount.getText().toString().replaceAll("[^\\d.]", "");
+        if (amountToWithdrawStr.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Please enter an amount to withdraw", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        BigDecimal amountToWithdraw = new BigDecimal(amountToWithdrawStr);
 
-        String old = String.format("%.02f", databaseHelper.getBalance(user));
+        BigDecimal old =  databaseHelper.getBalance(user);
         System.out.println(old);
-        if(Float.valueOf(old) < Float.valueOf(amt[1])) {
+        if(old.compareTo(amountToWithdraw) == -1) {
             Toast.makeText(MainActivity.this, "Overdraft, please enter less to withdraw", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
-        float newAmount = Float.valueOf(old) - Float.valueOf(amt[1]);
-
+        BigDecimal newAmount = old.subtract(amountToWithdraw);
         System.out.println(newAmount);
-        balance.setText("$" + newAmount);
         databaseHelper.updateUser(user, newAmount);
+        balance.setText("$" + String.format("%,.2f", databaseHelper.getBalance(user)));
+        Toast.makeText(MainActivity.this, "Successful withdrawal", Toast.LENGTH_SHORT).show();
+
     }
 
     private void deposit() {
 
-        String newer = amount.getText().toString().replaceAll(",","");
-        String[] amt = newer.split("\\$");
+        String amountToDepositStr = amount.getText().toString().replaceAll("[^\\d.]", "");
 
-        String old = String.format("%.02f", databaseHelper.getBalance(user));
+        if (amountToDepositStr.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Please enter an amount to withdraw", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        BigDecimal amountToDeposit = new BigDecimal(amountToDepositStr);
+
+        BigDecimal old =  databaseHelper.getBalance(user);
         System.out.println(old);
 
 
-        float newAmount = Float.valueOf(old) + Float.valueOf(amt[1]);
-
+        BigDecimal newAmount = old.add(amountToDeposit);
         System.out.println(newAmount);
-        balance.setText("$" + newAmount);
         databaseHelper.updateUser(user, newAmount);
+        balance.setText("$" + String.format("%,.2f", databaseHelper.getBalance(user)));
+        Toast.makeText(MainActivity.this, "Successful deposit", Toast.LENGTH_SHORT).show();
 
     }
 

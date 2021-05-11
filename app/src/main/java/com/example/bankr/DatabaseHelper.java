@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.math.BigDecimal;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String USERS_TABLE = "USERS";
@@ -38,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_USERNAME, user.getUsername());
-        cv.put(COLUMN_BALANCE, user.getBalance());
+        cv.put(COLUMN_BALANCE, user.getBalance().doubleValue());
         cv.put(COLUMN_PASSWORD, user.getPassword());
 
         long insert = db.insert(USERS_TABLE, null, cv);
@@ -74,19 +76,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public float getBalance(String username) {
+    public BigDecimal getBalance(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         String queryStr = "SELECT BALANCE FROM " + USERS_TABLE + " WHERE USERNAME = '" + username + "'";
         Cursor cursor = db.rawQuery(queryStr, null);
         if (cursor.moveToFirst()) {
-            return cursor.getFloat(0);
+            return BigDecimal.valueOf(cursor.getDouble(0));
         }
         else {
-            return -1;
+            return new BigDecimal(-1);
         }
     }
 
-    public float updateUser(String username, float balance) {
+    public BigDecimal updateUser(String username, BigDecimal balance) {
         SQLiteDatabase db = this.getWritableDatabase();
         String sql = "UPDATE "+USERS_TABLE +" SET " + COLUMN_BALANCE+ " = "+balance+" WHERE "+COLUMN_USERNAME+ " = '"+username +"'";
         db.execSQL(sql);

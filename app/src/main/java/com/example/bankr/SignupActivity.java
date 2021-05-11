@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 public class SignupActivity extends AppCompatActivity {
@@ -91,7 +92,7 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(SignupActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
                 return;
             }
-            float balance = Float.parseFloat(amount.getText().toString().replaceAll("[^\\d.]", ""));
+            BigDecimal balance = new BigDecimal(amount.getText().toString().replaceAll("[^\\d.]", ""));
             User user = new User(username.getText().toString(), balance, password.getText().toString());
             boolean success = databaseHelper.addUser(user);
 
