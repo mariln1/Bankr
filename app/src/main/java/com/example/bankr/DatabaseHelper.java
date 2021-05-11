@@ -3,13 +3,16 @@ package com.example.bankr;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -42,8 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_USERNAME, user.getUsername());
         cv.put(COLUMN_BALANCE, user.getBalance().doubleValue());
         cv.put(COLUMN_PASSWORD, user.getPassword());
-
         long insert = db.insert(USERS_TABLE, null, cv);
+        db.close();
         if (insert == -1) {
             return false;
         }
@@ -54,45 +57,62 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean checkIfUserExists(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String queryStr = "SELECT USERNAME FROM " + USERS_TABLE + " WHERE USERNAME = '" + username + "'";
-        Cursor cursor = db.rawQuery(queryStr, null);
+        Cursor cursor = db.rawQuery(
+                "SELECT USERNAME FROM USERS WHERE USERNAME = ?;",
+                new String[] {username});
         if (cursor.moveToFirst()) {
+            db.close();
             return true;
         }
         else {
+            db.close();
             return false;
         }
     }
 
-    public boolean checkUsernameAndPassword(String username, String password) {
+    public String checkUsernameAndPassword(String username, String password) {
+
+
         SQLiteDatabase db = this.getReadableDatabase();
-        String queryStr = "SELECT USERNAME FROM " + USERS_TABLE + " WHERE USERNAME = '" + username + "' AND PASSWORD = '" + password + "'";
-        Cursor cursor = db.rawQuery(queryStr, null);
+        Cursor cursor = db.rawQuery(
+                "SELECT USERNAME FROM USERS WHERE USERNAME = ? AND PASSWORD = '" + password + "';" ,
+                new String[]{username} );
+        //db.close();
+        String ret;
+        //cursor.moveToFirst();
         if (cursor.moveToFirst()) {
-            return true;
+            ret = cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME));
         }
         else {
-            return false;
+            ret = "";
         }
+        db.close();
+        return ret;
     }
 
     public BigDecimal getBalance(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String queryStr = "SELECT BALANCE FROM " + USERS_TABLE + " WHERE USERNAME = '" + username + "'";
-        Cursor cursor = db.rawQuery(queryStr, null);
+        Cursor cursor = db.rawQuery(
+                "SELECT BALANCE FROM USERS WHERE USERNAME = ?;",
+                new String[] {username});
+        BigDecimal ret;
         if (cursor.moveToFirst()) {
-            return BigDecimal.valueOf(cursor.getDouble(0));
+            ret = BigDecimal.valueOf(cursor.getDouble(cursor.getColumnIndex(COLUMN_BALANCE)));
         }
         else {
-            return new BigDecimal(-1);
+            ret = new BigDecimal(-1);
         }
+        db.close();
+        return ret;
     }
 
-    public BigDecimal updateUser(String username, BigDecimal balance) {
+    public boolean updateUser(String username, BigDecimal balance) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "UPDATE "+USERS_TABLE +" SET " + COLUMN_BALANCE+ " = "+balance+" WHERE "+COLUMN_USERNAME+ " = '"+username +"'";
-        db.execSQL(sql);
-        return balance;
+
+        String sql = "UPDATE USERS SET BALANCE = ? WHERE USERNAME = ?";
+        db.execSQL(sql, new String[] { String.valueOf(balance), username});
+        db.close();
+        return true;
 
     }
 }

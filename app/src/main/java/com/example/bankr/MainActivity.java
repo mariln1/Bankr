@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         BigDecimal amountToWithdraw = new BigDecimal(amountToWithdrawStr);
 
         BigDecimal old =  databaseHelper.getBalance(user);
-        System.out.println(old);
         if(old.compareTo(amountToWithdraw) == -1) {
             Toast.makeText(MainActivity.this, "Overdraft, please enter less to withdraw", Toast.LENGTH_SHORT).show();
             return;
@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         BigDecimal newAmount = old.subtract(amountToWithdraw);
         System.out.println(newAmount);
         databaseHelper.updateUser(user, newAmount);
+        BigDecimal b = databaseHelper.getBalance(user);
         balance.setText("$" + String.format("%,.2f", databaseHelper.getBalance(user)));
         Toast.makeText(MainActivity.this, "Successful withdrawal", Toast.LENGTH_SHORT).show();
 
@@ -150,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void logout() {
         Intent intent = new Intent(this, WelcomeActivity.class);
+        Toast.makeText(MainActivity.this, "Logout successful", Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 

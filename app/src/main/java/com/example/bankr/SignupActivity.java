@@ -77,13 +77,35 @@ public class SignupActivity extends AppCompatActivity {
         password = findViewById(R.id.etPassword);
         confirmPassword = findViewById(R.id.etConfirmPassword);
 
-        // TODO: neutralize inputs
+        String usernameStr = username.getText().toString();
+        String amountStr = amount.getText().toString();
+        String passwordStr = password.getText().toString();
+        String confirmPasswordStr = confirmPassword.getText().toString();
+
+        String cleanUsername =  usernameStr.replaceAll("[^a-z0-9_.\\-]", "");
+        String cleanAmount = amountStr.replaceAll("[^\\d.]", "");
+        String cleanPassword = passwordStr.replaceAll("[^a-z0-9_.\\-]", "");
+        String cleanConfirmPassword = confirmPasswordStr.replaceAll("[^a-z0-9_.\\-]", "");
+
+        if (!usernameStr.equals(cleanUsername) || !passwordStr.equals(cleanPassword) || !confirmPasswordStr.equals(cleanConfirmPassword)) {
+            Toast.makeText(SignupActivity.this,
+                    "invalid_input", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (usernameStr.length() > 127 || passwordStr.length() > 127 || confirmPasswordStr.length() > 127) {
+            Toast.makeText(SignupActivity.this,
+                    "input_input", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (username.getText().toString().isEmpty() || amount.getText().toString().isEmpty() || password.getText().toString().isEmpty() || confirmPassword.getText().toString().isEmpty()) {
             Toast.makeText(SignupActivity.this, "invalid_input", Toast.LENGTH_SHORT).show();
+            return;
         }
         else if (!password.getText().toString().equals(confirmPassword.getText().toString())) {
             Toast.makeText(SignupActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return;
         }
         else {
 
@@ -92,8 +114,8 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(SignupActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
                 return;
             }
-            BigDecimal balance = new BigDecimal(amount.getText().toString().replaceAll("[^\\d.]", ""));
-            User user = new User(username.getText().toString(), balance, password.getText().toString());
+            BigDecimal balance = new BigDecimal(cleanAmount);
+            User user = new User(cleanUsername, balance, cleanPassword);
             boolean success = databaseHelper.addUser(user);
 
             if (success) {
