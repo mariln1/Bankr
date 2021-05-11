@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         BigDecimal b = databaseHelper.getBalance(user);
         balance.setText("$" + String.format("%,.2f", databaseHelper.getBalance(user)));
         Toast.makeText(MainActivity.this, "Successful withdrawal", Toast.LENGTH_SHORT).show();
-        Log.d("BANKR LOG", "Successful deposit of " + amountToWithdrawStr);
+        Log.d("BANKR LOG", "Successful withdrawal of " + amountToWithdrawStr);
 
     }
 
