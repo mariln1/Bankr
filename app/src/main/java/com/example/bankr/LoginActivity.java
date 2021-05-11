@@ -37,8 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("My Log", "Clean username: " + cleanUsername);
         String passwordStr = password.getText().toString();
 
-
-        // TODO: neutralize inputs
         DatabaseHelper databaseHelper = new DatabaseHelper(LoginActivity.this);
         String user = databaseHelper.checkUsernameAndPassword(usernameStr, passwordStr);
         if (!user.equals("")) {
