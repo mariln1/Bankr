@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Login Screen of Bankr app
+ */
 public class LoginActivity extends AppCompatActivity {
 
 
@@ -32,19 +35,20 @@ public class LoginActivity extends AppCompatActivity {
 
         // neutralize inputs
         String usernameStr = username.getText().toString();
-        Log.d("My Log", "Inputted username: " + usernameStr );
         String cleanUsername = usernameStr.replaceAll("[^a-z0-9_.\\-]", "");
-        Log.d("My Log", "Clean username: " + cleanUsername);
         String passwordStr = password.getText().toString();
 
         DatabaseHelper databaseHelper = new DatabaseHelper(LoginActivity.this);
-        String user = databaseHelper.checkUsernameAndPassword(usernameStr, passwordStr);
+        String user = databaseHelper.checkUsernameAndPassword(cleanUsername, passwordStr);
         if (!user.equals("")) {
+            Log.d("BANKR LOG", "Successful login as " + cleanUsername);
+            Log.d("BANKR LOG", "Moving to main activity as " + cleanUsername);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("username", user);
             startActivity(intent);
         }
         else {
+            Log.d("BANKR LOG", "Failed Login");
             Toast.makeText(LoginActivity.this, "Username and/or Password is incorrect", Toast.LENGTH_SHORT).show();
         }
     }

@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * Welcome Activity for Bankr
+ * Allows user to either log in or sign up
+ */
 public class WelcomeActivity extends AppCompatActivity {
 
     Button login;

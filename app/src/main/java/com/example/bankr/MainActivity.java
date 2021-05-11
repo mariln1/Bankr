@@ -16,6 +16,11 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
+/**
+ * Main page of Bankr
+ * Displays balance
+ * Allows user to withdraw, deposit, or log out
+ */
 public class MainActivity extends AppCompatActivity {
 
     Button withdraw;
@@ -104,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Withdraw money, update SQLite table
+     * Error if overdraft
+     */
     private void withdraw() {
         String amountToWithdrawStr = amount.getText().toString().replaceAll("[^\\d.]", "");
         if (amountToWithdrawStr.isEmpty()) {
@@ -113,20 +122,27 @@ public class MainActivity extends AppCompatActivity {
         BigDecimal amountToWithdraw = new BigDecimal(amountToWithdrawStr);
 
         BigDecimal old =  databaseHelper.getBalance(user);
+
+        // check if overdraft
         if(old.compareTo(amountToWithdraw) == -1) {
+            Log.d("BANKR LOG", "Failed withdrawal (overdraft)");
             Toast.makeText(MainActivity.this, "Overdraft, please enter less to withdraw", Toast.LENGTH_SHORT).show();
             return;
         }
 
         BigDecimal newAmount = old.subtract(amountToWithdraw);
-        System.out.println(newAmount);
+        Log.d("BANKR LOG", "Updating database with new balance...");
         databaseHelper.updateUser(user, newAmount);
         BigDecimal b = databaseHelper.getBalance(user);
         balance.setText("$" + String.format("%,.2f", databaseHelper.getBalance(user)));
         Toast.makeText(MainActivity.this, "Successful withdrawal", Toast.LENGTH_SHORT).show();
+        Log.d("BANKR LOG", "Successful deposit of " + amountToWithdrawStr);
 
     }
 
+    /**
+     * Deposit money, update SQLite table
+     */
     private void deposit() {
 
         String amountToDepositStr = amount.getText().toString().replaceAll("[^\\d.]", "");
@@ -142,15 +158,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         BigDecimal newAmount = old.add(amountToDeposit);
-        System.out.println(newAmount);
+        Log.d("BANKR LOG", "Updating database with new balance...");
         databaseHelper.updateUser(user, newAmount);
         balance.setText("$" + String.format("%,.2f", databaseHelper.getBalance(user)));
         Toast.makeText(MainActivity.this, "Successful deposit", Toast.LENGTH_SHORT).show();
+        Log.d("BANKR LOG", "Successful deposit of " + amountToDepositStr);
 
     }
 
     private void logout() {
         Intent intent = new Intent(this, WelcomeActivity.class);
+        Log.d("BANKR LOG", "User logging out.. Going back to WelcomeActivity");
         Toast.makeText(MainActivity.this, "Logout successful", Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }

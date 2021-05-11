@@ -15,6 +15,10 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
+/**
+ * Signup activity for Bankr
+ * Allows user to register for an account
+ */
 public class SignupActivity extends AppCompatActivity {
 
     Button signup;
@@ -82,29 +86,36 @@ public class SignupActivity extends AppCompatActivity {
         String passwordStr = password.getText().toString();
         String confirmPasswordStr = confirmPassword.getText().toString();
 
+
+        // neutralize inputs
         String cleanUsername =  usernameStr.replaceAll("[^a-z0-9_.\\-]", "");
         String cleanAmount = amountStr.replaceAll("[^\\d.]", "");
         String cleanPassword = passwordStr.replaceAll("[^a-z0-9_.\\-]", "");
         String cleanConfirmPassword = confirmPasswordStr.replaceAll("[^a-z0-9_.\\-]", "");
 
+        // check if entered inputs are neutralized
         if (!usernameStr.equals(cleanUsername) || !passwordStr.equals(cleanPassword) || !confirmPasswordStr.equals(cleanConfirmPassword)) {
             Toast.makeText(SignupActivity.this,
                     "invalid_input", Toast.LENGTH_SHORT).show();
+            Log.d("BANKR LOG", "User tried signing up with invalid credentials");
             return;
         }
 
         if (usernameStr.length() > 127 || passwordStr.length() > 127 || confirmPasswordStr.length() > 127) {
             Toast.makeText(SignupActivity.this,
                     "input_input", Toast.LENGTH_SHORT).show();
+            Log.d("BANKR LOG", "User tried signing up with invalid credentials");
             return;
         }
 
         if (username.getText().toString().isEmpty() || amount.getText().toString().isEmpty() || password.getText().toString().isEmpty() || confirmPassword.getText().toString().isEmpty()) {
             Toast.makeText(SignupActivity.this, "invalid_input", Toast.LENGTH_SHORT).show();
+            Log.d("BANKR LOG", "User tried signing up with invalid credentials");
             return;
         }
         else if (!password.getText().toString().equals(confirmPassword.getText().toString())) {
             Toast.makeText(SignupActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            Log.d("BANKR LOG", "User tried signing up with invalid credentials");
             return;
         }
         else {
@@ -112,6 +123,7 @@ public class SignupActivity extends AppCompatActivity {
             DatabaseHelper databaseHelper = new DatabaseHelper(SignupActivity.this);
             if (databaseHelper.checkIfUserExists(username.getText().toString())) {
                 Toast.makeText(SignupActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                Log.d("BANKR LOG", "User tried signing up with a username that already exists");
                 return;
             }
             BigDecimal balance = new BigDecimal(cleanAmount);
@@ -120,11 +132,14 @@ public class SignupActivity extends AppCompatActivity {
 
             if (success) {
                 Toast.makeText(SignupActivity.this, "Account created", Toast.LENGTH_SHORT).show();
+                Log.d("BANKR LOG", "User successfully signed up for a Bankr account");
             }
             else {
                 Toast.makeText(SignupActivity.this, "Error creating account", Toast.LENGTH_SHORT).show();
+                Log.d("BANKR LOG", "Error creating account");
             }
 
+            Log.d("BANKR LOG", "Moving to LoginActivity");
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
