@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import net.sqlcipher.database.SQLiteDatabase;
 
 /**
  * Login Screen of Bankr app
@@ -37,9 +38,11 @@ public class LoginActivity extends AppCompatActivity {
         String usernameStr = username.getText().toString();
         String cleanUsername = usernameStr.replaceAll("[^a-z0-9_.\\-]", "");
         String passwordStr = password.getText().toString();
+        String cleanPassword = passwordStr.replaceAll("[^a-z0-9_.\\-]", "");
 
+        SQLiteDatabase.loadLibs(this);
         DatabaseHelper databaseHelper = new DatabaseHelper(LoginActivity.this);
-        String user = databaseHelper.checkUsernameAndPassword(cleanUsername, passwordStr);
+        String user = databaseHelper.checkUsernameAndPassword(cleanUsername, cleanPassword);
         if (!user.equals("")) {
             Log.d("BANKR LOG", "Successful login as " + cleanUsername);
             Log.d("BANKR LOG", "Moving to main activity as " + cleanUsername);

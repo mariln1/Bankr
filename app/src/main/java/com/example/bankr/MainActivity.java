@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import net.sqlcipher.database.SQLiteDatabase;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SQLiteDatabase.loadLibs(this);
         databaseHelper = new DatabaseHelper(MainActivity.this);
 
         welcomeMessage = (TextView) findViewById(R.id.welcomeMessage);

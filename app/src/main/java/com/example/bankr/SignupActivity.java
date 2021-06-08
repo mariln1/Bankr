@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import net.sqlcipher.database.SQLiteDatabase;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -119,7 +120,7 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
         else {
-
+            SQLiteDatabase.loadLibs(this);
             DatabaseHelper databaseHelper = new DatabaseHelper(SignupActivity.this);
             if (databaseHelper.checkIfUserExists(username.getText().toString())) {
                 Toast.makeText(SignupActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();

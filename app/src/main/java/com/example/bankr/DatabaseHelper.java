@@ -3,22 +3,16 @@ package com.example.bankr;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
-
 import androidx.annotation.Nullable;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 
 /**
  * Handles all SQLite database commands
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
-
     public static final String USERS_TABLE = "USERS";
     public static final String COLUMN_USERNAME = "USERNAME";
     public static final String COLUMN_BALANCE = "BALANCE";
@@ -48,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return true if successful, false if not
      */
     public boolean addUser (User user) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase("password");
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_USERNAME, user.getUsername());
         cv.put(COLUMN_BALANCE, user.getBalance().doubleValue());
@@ -69,7 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return true if taken, false if available
      */
     public boolean checkIfUserExists(String username) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase("password");
         Cursor cursor = db.rawQuery(
                 "SELECT USERNAME FROM USERS WHERE USERNAME = ?;",
                 new String[] {username});
@@ -92,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String checkUsernameAndPassword(String username, String password) {
 
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase("password");
         Cursor cursor = db.rawQuery(
                 "SELECT USERNAME FROM USERS WHERE USERNAME = ? AND PASSWORD = '" + password + "';" ,
                 new String[]{username} );
@@ -113,7 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return balance
      */
     public BigDecimal getBalance(String username) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase("password");
         Cursor cursor = db.rawQuery(
                 "SELECT BALANCE FROM USERS WHERE USERNAME = ?;",
                 new String[] {username});
@@ -135,7 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return true
      */
     public boolean updateUser(String username, BigDecimal balance) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase("password");
 
         String sql = "UPDATE USERS SET BALANCE = ? WHERE USERNAME = ?";
         db.execSQL(sql, new String[] { String.valueOf(balance), username});
